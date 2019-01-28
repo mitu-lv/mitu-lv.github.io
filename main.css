@@ -1,0 +1,142 @@
+*
+{
+  margin:0;padding:0;
+}
+
+html,body
+{
+    height:100%;
+}
+body
+{
+   display: table;
+   margin: 0 auto;
+}
+
+.playground
+{
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+.game {
+    width: 300px;
+	height: 300px;
+    /* position: relative; */
+}
+.empty {
+	float: left;
+	border: 1px solid black;
+	background: beige;
+
+	width: 98px;
+	height: 98px;
+}
+.player {
+	background: url(x.svg) no-repeat top left;
+}
+.cpu {
+	background: url(o.svg) no-repeat top left;
+}
+.readonly {
+	position: relative;
+	top: 74px;
+    left: 10px;
+	width: 170px;
+	height: 171px;
+	/*background-color: rgba(0, 255, 255, 0.8);*/
+}
+.inp {
+	position: relative;
+	top: 83px;
+    left: 10px;
+	width: 170px;
+	height: 31px;
+	/*background-color: rgba(255, 0, 255, 0.8);*/
+}
+.hearthider {
+	visibility: hidden;
+	background-color: #c0c0c0;
+	position: absolute;
+	top: 50px;
+	left: 10px;
+	width: 41px;
+	height: 14px;
+}
+
+.block {
+	width: 30px;
+	height: 30px;
+	background-color: #c0c0c0;
+	/*background: transparent;*/
+	position: absolute;
+	font-family: sans-serif;
+	line-height: 33px;
+    font-size: 23px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.readonly.error .block{
+	background-color: red;
+}
+
+.carret {
+	position: relative;
+	left: 12px;
+	top: 79px;
+	width: 26px;
+	height: 1px;
+	background-color: black;
+	-webkit-animation: 1s blink step-end infinite;
+    -moz-animation: 1s blink step-end infinite;
+    -ms-animation: 1s blink step-end infinite;
+    -o-animation: 1s blink step-end infinite;
+    animation: 1s blink step-end infinite;
+}
+
+@keyframes "blink" {
+  from, to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: black;
+  }
+}
+
+@-moz-keyframes blink {
+  from, to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: black;
+  }
+}
+
+@-webkit-keyframes "blink" {
+  from, to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: black;
+  }
+}
+
+@-ms-keyframes "blink" {
+  from, to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: black;
+  }
+}
+
+@-o-keyframes "blink" {
+  from, to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: black;
+  }
+}
