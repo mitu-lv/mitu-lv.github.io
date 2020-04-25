@@ -1,7 +1,4 @@
 
-var PLAYER = 1;
-var CPU = 2;
-
 function createSVG(paths) {
     var namespace = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(namespace, 'svg');
@@ -18,14 +15,97 @@ function createSVG(paths) {
 }
 
 function desa(container) {
+    var PLAYER = 1;
+    var CPU = 2;
+    var turn = 1;
+
     var pgState = [
-        [0, 2, 0],
+        [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]
     ]
 
+    function combinations() {
+
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    function initialTurn() {
+        turn = Math.round(Math.random()) + 1;
+    }
+
+    function hasWon(turn) {
+        for (var i = 0, len = pgState.length; i < len; i++) {
+            // cols
+            if (pgState[i][0] === turn && pgState[i][1] === turn && pgState[i][2] === turn) {
+                return true;
+            }
+            // rows
+            if (pgState[0][i] === turn && pgState[1][i] === turn && pgState[2][i] === turn) {
+                return true;
+            }
+            // diag 1
+            if (pgState[0][0] === turn && pgState[1][1] === turn && pgState[2][2] === turn) {
+                return true;
+            }
+            // diag 2
+            if (pgState[0][2] === turn && pgState[1][1] === turn && pgState[2][0] === turn) {
+                return true;
+            }
+        }
+    }
+
+    function isFinished() {
+        const free = getFreeCells();
+        if (free.length === 0) {
+            return true;
+        }
+
+        return hasWon(turn);
+    }
+
+    function passTurn() {
+        if (isFinished()) {
+            console.log(turn === CPU ? 'CPU' : 'PLAYER', ' has won');
+            turn = 0;
+            return;
+        }
+        turn = 1 + (turn % 2);
+        if (turn === CPU) {
+            cpuTurn();
+        }
+    }
+
+    function getFreeCells() {
+        const freeCells = [];
+        for (var i = 0, len = pgState.length; i < len; i++) {
+            for (var j = 0, jlen=pgState[i].length; j < jlen; j++) {
+                if (pgState[i][j] === 0) {
+                    freeCells.push([i, j]);
+                }
+            }
+        }
+        return freeCells;
+    }
+
+    function cpuTurn() {
+        var free = getFreeCells();
+        var freeLength = free.length;
+
+        var markable = free[getRandomInt(freeLength)];
+        if (free.some(s => s[0] === 1 && s[1] === 1)) {
+            markable = [1, 1];
+        }
+
+        markState(markable[0], markable[1], CPU);
+        passTurn();
+    }
+
     function markState(row, col, who) {
-        if(pgState[row][col] !== 0 || who !== PLAYER) {
+        if(pgState[row][col] !== 0 || who !== turn) {
             return;
         }
 
@@ -85,18 +165,22 @@ function desa(container) {
             blockElem.className = getStatStyle(pgState[rowIndex][colIndex]);
 
             blockElem.onclick = function() {
-                markState(rowIndex, colIndex, PLAYER);
+                if (turn === PLAYER) {
+                    markState(rowIndex, colIndex, PLAYER);
+                    passTurn();
+                }
             };
         });
     }
 
     function d3sa() {
         drawPg();
-    }
+        initialTurn();
 
-    Object.assign(d3sa, {
-        drawPg
-    })
+        if (turn === CPU) {
+            cpuTurn();
+        }
+    }
 
     return d3sa;
 }

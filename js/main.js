@@ -1,7 +1,4 @@
-var shared = {
-
-}
-
+var shared = {}
 
 document.addEventListener("DOMContentLoaded", function(event) {
 	var pg = document.getElementsByClassName("pg")[0];
