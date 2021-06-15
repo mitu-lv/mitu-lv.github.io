@@ -14,7 +14,31 @@ function createSVG(paths) {
     return svg;
 }
 
+function getStatStyle(who) {
+    let className = 'empty';
+
+    switch(who) {
+        case 1:
+            className += ' player';
+        break;
+        case 2:
+            className += ' cpu';
+        break;
+    }
+
+    return className;
+}
+
+function updatePg(row, col, who) {
+    const index = (3 * row + col);
+
+    var blockElem = document.querySelector('.empty:nth-child(' +  (index + 1) + ')');
+
+    blockElem.className = getStatStyle(who);
+}
+
 function desa(container) {
+    const BLANK = 0;
     var PLAYER = 1;
     var CPU = 2;
     var turn = 1;
@@ -37,7 +61,7 @@ function desa(container) {
         turn = Math.round(Math.random()) + 1;
     }
 
-    function hasWon(turn) {
+    function hasWon(pgState, turn) {
         for (var i = 0, len = pgState.length; i < len; i++) {
             // cols
             if (pgState[i][0] === turn && pgState[i][1] === turn && pgState[i][2] === turn) {
@@ -58,21 +82,22 @@ function desa(container) {
         }
     }
 
-    function isFinished() {
+    function noCellsLeft() {
         const free = getFreeCells();
         if (free.length === 0) {
             return true;
         }
-
-        return hasWon(turn);
     }
 
     function passTurn() {
-        if (isFinished()) {
+        if (hasWon(pgState, turn)) {
             console.log(turn === CPU ? 'CPU' : 'PLAYER', ' has won');
-            turn = 0;
+            return;
+        } else if (noCellsLeft()) {
+            console.log('DRAW');
             return;
         }
+
         turn = 1 + (turn % 2);
         if (turn === CPU) {
             cpuTurn();
@@ -92,20 +117,92 @@ function desa(container) {
     }
 
     function cpuTurn() {
-        var free = getFreeCells();
-        var freeLength = free.length;
+        const [_, choice] = Minimax(pgState, CPU);
 
-        var markable = free[getRandomInt(freeLength)];
-        if (free.some(s => s[0] === 1 && s[1] === 1)) {
-            markable = [1, 1];
+        if (choice != null) {
+            const [row, col] = choice;
+            markState(row, col, CPU);
         }
 
-        markState(markable[0], markable[1], CPU);
         passTurn();
     }
 
+    function Minimax(pgState, player) {
+        // check if already won
+        const winner = hasWon(pgState, CPU) ? CPU : hasWon(pgState, PLAYER) ? PLAYER : null;
+
+        if (winner == CPU) {
+            return [1, null];
+        } else if (winner == PLAYER) {
+            return [-1, null];
+        }
+
+        let move, moveScore;
+        if (player == CPU) {
+            [moveScore, move] = Minimax_Maximize(pgState);
+        } else {
+            [moveScore, move] = Minimax_Minimize(pgState);
+        }
+
+        if (move == null) {
+            moveScore = 0;
+        }
+
+        // draw
+        return [moveScore, move];
+    }
+
+    function Minimax_Maximize(pgState) {
+        let moveScore = Number.NEGATIVE_INFINITY;
+        let move = null;
+
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                if (pgState[x][y] == BLANK) {
+                    const newPgState = pgState.map(r => r.slice());
+
+                    newPgState[x][y] = CPU;
+
+                    const [newMoveScore, _] = Minimax(newPgState, PLAYER);
+
+                    if (newMoveScore > moveScore) {
+                        move = [x, y];
+                        moveScore = newMoveScore;
+                    }
+                }
+            }
+        }
+
+        return [moveScore, move];
+    }
+
+    function Minimax_Minimize(pgState) {
+        let moveScore = Number.POSITIVE_INFINITY;
+        let move = null;
+
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                if (pgState[x][y] == BLANK) {
+                    const newPgState = pgState.map(r => r.slice());
+
+                    newPgState[x][y] = PLAYER;
+
+                    const [newMoveScore, _] = Minimax(newPgState, CPU);
+
+                    if (newMoveScore < moveScore) {
+                        move = [x, y];
+                        moveScore = newMoveScore;
+                    }
+                }
+            }
+        }
+
+        return [moveScore, move];
+    }
+
+
     function markState(row, col, who) {
-        if(pgState[row][col] !== 0 || who !== turn) {
+        if(pgState[row][col] !== BLANK && who !== turn) {
             return;
         }
 
@@ -118,29 +215,6 @@ function desa(container) {
         pgState.forEach(function(row, i) {
             drawPgRow(row, i);
         });
-    }
-
-    function getStatStyle(who) {
-        var className = 'empty';
-
-        switch(who) {
-            case 1:
-                className += ' player';
-            break;
-            case 2:
-                className += ' cpu';
-            break;
-        }
-
-        return className;
-    }
-
-    function updatePg(row, col, who) {
-        const index = (3 * row + col);
-
-        var blockElem = document.querySelector('.empty:nth-child(' +  (index + 1) + ')');
-
-        blockElem.className = getStatStyle(who);
     }
 
     function drawPgRow(row, rowIndex) {
@@ -165,7 +239,7 @@ function desa(container) {
             blockElem.className = getStatStyle(pgState[rowIndex][colIndex]);
 
             blockElem.onclick = function() {
-                if (turn === PLAYER) {
+                if (turn === PLAYER && pgState[rowIndex][colIndex] === BLANK) {
                     markState(rowIndex, colIndex, PLAYER);
                     passTurn();
                 }
