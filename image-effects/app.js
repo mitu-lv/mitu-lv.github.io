@@ -34173,12 +34173,21 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function App() {
     const [props, setEffects] = (0, import_react23.useState)({});
     const [image, setImageData] = (0, import_react23.useState)({ dataUrl: null, width: 0, height: 0 });
-    function setInputImage(image2) {
-      setImageData(imageToDataUrl(image2));
+    function setInputImage(image2, { width, height }) {
+      const imageData = imageToDataUrl(image2);
+      setImageData({
+        dataUrl: imageData.dataUrl,
+        width: width || imageData.width,
+        height: height || imageData.height
+      });
     }
-    async function setInputImageUrl(url) {
+    async function setInputImageUrl(url, { width, height }) {
       const image2 = await imageUrlToDataUrl(url);
-      setImageData(image2);
+      setImageData({
+        dataUrl: image2.dataUrl,
+        width: width || image2.width,
+        height: height || image2.height
+      });
     }
     (0, import_react23.useEffect)(() => {
       exposeApi({
