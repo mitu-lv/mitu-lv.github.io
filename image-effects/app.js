@@ -34232,10 +34232,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const image = event.data.image;
     if (image) {
       if (image.startsWith("http")) {
-        ImageEffects.setInputImageUrl(image);
+        ImageEffects.setInputImageUrl(image, event.data.size);
         return;
       }
-      ImageEffects.setInputImage(image);
+      ImageEffects.setInputImage(image, event.data.size);
       return;
     }
     const effects = event.data.effects;
