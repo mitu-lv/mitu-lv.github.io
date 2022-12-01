@@ -34145,14 +34145,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function svgToDataUrl(svg) {
     return `data:image/svg+xml;base64,${btoa(new XMLSerializer().serializeToString(svg))}`;
   }
-  async function imageUrlToDataUrl(url) {
-    const image = await loadImage(url, url);
+  function imageToDataUrl(image) {
     const canvas = document.createElement("canvas");
     canvas.width = image.width;
     canvas.height = image.height;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(image, 0, 0);
     return { dataUrl: canvas.toDataURL("image/png", 1), width: image.width, height: image.height };
+  }
+  async function imageUrlToDataUrl(url) {
+    const image = await loadImage(url, true);
+    return imageToDataUrl(image);
   }
   async function getOutputImage() {
     const svgElement = document.getElementsByClassName("svgBlock")[0];
@@ -34168,16 +34171,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     window.ImageEffects = api;
   }
   function App() {
-    const [props, setProps] = (0, import_react23.useState)({});
+    const [props, setEffects] = (0, import_react23.useState)({});
     const [image, setImageData] = (0, import_react23.useState)({ dataUrl: null, width: 0, height: 0 });
-    async function setInputImage(url) {
+    function setInputImage(image2) {
+      setImageData(imageToDataUrl(image2));
+    }
+    async function setInputImageUrl(url) {
       const image2 = await imageUrlToDataUrl(url);
       setImageData(image2);
     }
     (0, import_react23.useEffect)(() => {
       exposeApi({
-        setEffects: setProps,
+        setEffects,
         setInputImage,
+        setInputImageUrl,
         getOutputImage
       });
     }, []);
@@ -34202,6 +34209,34 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return /* @__PURE__ */ import_react24.default.createElement(App, null);
   }
   var root = import_react_dom.default.render(/* @__PURE__ */ import_react24.default.createElement(Entry, null), document.getElementById("root"));
+  function receiveMessage(event) {
+    const close = event.data.close;
+    if (close) {
+      ImageEffects.getImageOutput().then((image2) => {
+        window.parent.postMessage({
+          kind: "ImageEffectsResult",
+          image: image2.src
+        }, "*");
+      });
+      return;
+    }
+    const image = event.data.image;
+    if (image) {
+      if (image.startsWith("http")) {
+        ImageEffects.setInputImageUrl(image);
+        return;
+      }
+      ImageEffects.setInputImage(image);
+      return;
+    }
+    const effects = event.data.effects;
+    if (effects) {
+      ImageEffects.setEffects(effects);
+      return;
+    }
+  }
+  window.addEventListener("message", receiveMessage, false);
+  window.parent.postMessage({ kind: "ImageEffectsReady" }, "*");
 })();
 /*
 object-assign
