@@ -33717,6 +33717,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
   var noop2 = () => {
   };
+  function relativeV(value) {
+    const min = 0.1;
+    const max = 0.3;
+    return (value - min) / (max - min);
+  }
   function getVignetteRect({ width, height, clip }) {
     if (!clip) {
       return { left: 0, top: 0, width, height };
@@ -33788,6 +33793,44 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       height: this.props.height,
       filter: this.state.filter
     });
+    calcRounded = () => {
+      const { width: sizeWidth, height: sizeHeight } = this.props;
+      const rounded = this.state.rounded / 2;
+      const minDim = Math.min(sizeWidth, sizeHeight);
+      let x2 = 0;
+      let y2 = 0;
+      let rx = minDim * rounded;
+      let width = sizeWidth;
+      let height = sizeHeight;
+      if (rounded < 0.1) {
+      } else if (rounded >= 0.3) {
+        x2 = (sizeWidth - minDim) / 2;
+        y2 = (sizeHeight - minDim) / 2;
+        width = minDim;
+        height = minDim;
+      } else {
+        if (sizeWidth < sizeHeight) {
+          const o2 = (sizeHeight - sizeWidth) * relativeV(rounded) / 2;
+          y2 = o2;
+          height = sizeHeight - o2;
+        } else {
+          height = minDim;
+          const o2 = (sizeWidth - sizeHeight) * relativeV(rounded) / 2;
+          x2 = o2;
+          width = sizeWidth - o2;
+        }
+      }
+      return /* @__PURE__ */ import_react20.default.createElement("mask", {
+        id: `${this.state.id}-mask`
+      }, /* @__PURE__ */ import_react20.default.createElement("rect", {
+        x: x2,
+        y: y2,
+        rx,
+        width,
+        height,
+        fill: "white"
+      }));
+    };
     renderSVGImageWithVignette = () => {
       const { src, width, height } = this.props;
       const { vignette, filter, svgFilters } = this.state;
@@ -33801,7 +33844,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         y: "0",
         width: "100%",
         height: "100%"
-      }, svgFilters.entrySeq().sort(filterSequence).map(this.definition)), vignette && /* @__PURE__ */ import_react20.default.createElement("radialGradient", {
+      }, svgFilters.entrySeq().sort(filterSequence).map(this.definition)), this.state.isRounded && this.calcRounded(), vignette && /* @__PURE__ */ import_react20.default.createElement("radialGradient", {
         id: vignetteId,
         cx: vignetteRect.left + vignetteRect.width / 2,
         cy: vignetteRect.top + vignetteRect.height / 2,
@@ -33813,14 +33856,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         xlinkHref: src,
         width,
         height,
-        filter
+        filter,
+        mask: this.state.isRounded ? `url(#${this.state.id}-mask)` : void 0
       }), vignette && /* @__PURE__ */ import_react20.default.createElement("rect", {
         x: "0",
         y: "0",
         width,
         height,
         style: { opacity: vignette },
-        fill: `url(#${vignetteId})`
+        fill: `url(#${vignetteId})`,
+        mask: this.state.isRounded ? `url(#${this.state.id}-mask)` : void 0
       })));
     };
     renderImageWithVignette = () => {
@@ -33901,7 +33946,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     if (filters && !filters.isEmpty()) {
       const id = (0, import_uuid.default)();
       const vignette = amountOf(filters, "vignette");
-      const svgFilters = filters.delete("vignette");
+      const rounded = amountOf(filters, "rounded");
+      let svgFilters = filters.delete("vignette");
+      svgFilters = svgFilters.delete("rounded");
       if (svgFilters.isEmpty()) {
         return {
           id,
@@ -33914,7 +33961,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         id,
         vignette,
         filter: `url(#${id})`,
-        svgFilters
+        svgFilters,
+        isRounded: rounded > 0,
+        rounded: filters.get("rounded")
       };
     }
     return cachedNothing;
@@ -34173,20 +34222,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function App() {
     const [props, setEffects] = (0, import_react23.useState)({});
     const [image, setImageData] = (0, import_react23.useState)({ dataUrl: null, width: 0, height: 0 });
-    function setInputImage(image2, { width, height }) {
+    function setInputImage(image2, size) {
       const imageData = imageToDataUrl(image2);
       setImageData({
         dataUrl: imageData.dataUrl,
-        width: width || imageData.width,
-        height: height || imageData.height
+        width: size?.width || imageData.width,
+        height: size?.height || imageData.height
       });
     }
-    async function setInputImageUrl(url, { width, height }) {
+    async function setInputImageUrl(url, size) {
       const image2 = await imageUrlToDataUrl(url);
       setImageData({
         dataUrl: image2.dataUrl,
-        width: width || image2.width,
-        height: height || image2.height
+        width: size?.width || image2.width,
+        height: size?.height || image2.height
       });
     }
     (0, import_react23.useEffect)(() => {
