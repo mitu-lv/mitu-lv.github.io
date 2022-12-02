@@ -33811,12 +33811,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       } else {
         if (sizeWidth < sizeHeight) {
           const o2 = (sizeHeight - sizeWidth) * relativeV(rounded) / 2;
-          y2 = o2;
+          y2 = o2 / 2;
           height = sizeHeight - o2;
         } else {
           height = minDim;
           const o2 = (sizeWidth - sizeHeight) * relativeV(rounded) / 2;
-          x2 = o2;
+          x2 = o2 / 2;
           width = sizeWidth - o2;
         }
       }
