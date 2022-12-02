@@ -33915,7 +33915,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         onDoubleClick: this.props.onDoubleClick,
         id: this.props.id,
         key: this.props.id || isSafari && genNewKeyOnEveryMaskMove(this.props)
-      }, this.useSvgFallback() ? this.renderSVG() : this.state.vignette ? this.renderImageWithVignette() : this.renderImage());
+      }, this.renderSVG());
     }
   };
   var BaseImage = _BaseImage;
@@ -34191,6 +34191,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // src/App.jsx
   var import_immutable2 = __toESM(require_immutable());
+  var presetDefaults = {
+    blackAndWhite: 1,
+    hdr: 0.5,
+    riga: 0.5,
+    seventies: 0.5,
+    sanfrancisco: 0.5,
+    bronze: 0.5,
+    budapest: 0.5,
+    vintage: 0.5
+  };
+  function enablePreset(preset) {
+    if (Object.keys(presetDefaults).includes(preset)) {
+      ImageEffects.setEffects({
+        filters: {
+          [preset]: presetDefaults[preset]
+        }
+      });
+    }
+  }
+  window.enablePreset = enablePreset;
   function svgToDataUrl(svg) {
     return `data:image/svg+xml;base64,${btoa(new XMLSerializer().serializeToString(svg))}`;
   }
