@@ -34221,7 +34221,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   function receiveMessage(event) {
     const close = event.data.close;
     if (close) {
-      ImageEffects.getImageOutput().then((image2) => {
+      ImageEffects.getOutputImage().then((image2) => {
         window.parent.postMessage({
           kind: "ImageEffectsResult",
           image: image2.src
