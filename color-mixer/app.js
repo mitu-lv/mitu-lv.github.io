@@ -1012,7 +1012,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1792,7 +1792,7 @@
           exports.useContext = useContext;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
@@ -22909,11 +22909,11 @@
     return n ? Math.round(x * (n = Math.pow(10, n))) / n : Math.round(x);
   }
   function mixColors(base, added) {
-    const a = round(added.a * maxRgbValue, 2);
+    const a = round(added.a * maxRgbValue, 17);
     return {
-      r: Math.floor((round(round(maxRgbValue - a, 2) * base.r, 2) + round(a * added.r, 2)) / maxRgbValue),
-      g: Math.floor((round(round(maxRgbValue - a, 2) * base.g, 2) + round(a * added.g, 2)) / maxRgbValue),
-      b: Math.floor((round(round(maxRgbValue - a, 2) * base.b, 2) + round(a * added.b, 2)) / maxRgbValue)
+      r: Math.round((round(round(maxRgbValue - a, 17) * base.r, 17) + round(a * added.r, 17)) / maxRgbValue),
+      g: Math.round((round(round(maxRgbValue - a, 17) * base.g, 17) + round(a * added.g, 17)) / maxRgbValue),
+      b: Math.round((round(round(maxRgbValue - a, 17) * base.b, 17) + round(a * added.b, 17)) / maxRgbValue)
     };
   }
   function toHex(number) {
@@ -22943,7 +22943,7 @@
       r: rgbArr[0],
       g: rgbArr[1],
       b: rgbArr[2],
-      a: rgbArr[3] ? rgbArr[3] : 1
+      a: rgbArr[3] === void 0 ? 1 : rgbArr[3]
     };
   }
   function readColor(str) {
@@ -22971,13 +22971,17 @@
   }
 
   // src/App.jsx
+  function getResult(layerOfColors) {
+    const result = mixLayersOfColors([...layerOfColors]);
+    const rgba = hexToRgba(result.substr(1, 6));
+    return { hex: result, rgb: `rgb(${rgba.r}, ${rgba.g}, ${rgba.b})` };
+  }
   function App() {
     const [layerOfColors, setLayerOfColors] = (0, import_react.useState)(["rgba(0,0,0,0.1)", "#ffffff"]);
-    const [result, setResult] = (0, import_react.useState)("none");
+    const [result, setResult] = (0, import_react.useState)({ hex: "none", rgb: "none" });
     const handleSubmit = (e) => {
       e.preventDefault();
-      const result2 = mixLayersOfColors([...layerOfColors]);
-      setResult(result2);
+      setResult(getResult(layerOfColors));
     };
     function removeItem(e) {
       if (layerOfColors.length < 3) {
@@ -22996,6 +23000,9 @@
       layerOfColors[index] = e.target.value;
       setLayerOfColors([...layerOfColors]);
     }
+    (0, import_react.useEffect)(() => {
+      setResult(getResult(layerOfColors));
+    }, []);
     return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", {
       className: "align-transform-colors"
     }, /* @__PURE__ */ import_react.default.createElement("h1", null, "Mix colors by putting transparent colors one on top of the other"), /* @__PURE__ */ import_react.default.createElement("form", {
@@ -23029,8 +23036,8 @@
       className: "row"
     }, /* @__PURE__ */ import_react.default.createElement("div", {
       className: "color",
-      style: { backgroundColor: result }
-    }), /* @__PURE__ */ import_react.default.createElement("div", null, result))));
+      style: { backgroundColor: result.hex }
+    }), /* @__PURE__ */ import_react.default.createElement("div", null, "hex: ", result.hex, /* @__PURE__ */ import_react.default.createElement("br", null), "rgb: ", result.rgb))));
   }
 
   // src/index.jsx
