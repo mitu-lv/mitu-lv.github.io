@@ -1012,7 +1012,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1792,7 +1792,7 @@
           exports.useContext = useContext;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
@@ -5202,13 +5202,13 @@
           var IS_CAPTURE_PHASE = 1 << 2;
           var SHOULD_NOT_PROCESS_POLYFILL_EVENT_PLUGINS = IS_EVENT_HANDLE_NON_MANAGED_NODE | IS_NON_DELEGATED | IS_CAPTURE_PHASE;
           var currentReplayingEvent = null;
-          function setReplayingEvent(event) {
+          function setReplayingEvent(event2) {
             {
               if (currentReplayingEvent !== null) {
                 error("Expected currently replaying event to be null. This error is likely caused by a bug in React. Please file an issue.");
               }
             }
-            currentReplayingEvent = event;
+            currentReplayingEvent = event2;
           }
           function resetReplayingEvent() {
             {
@@ -5218,8 +5218,8 @@
             }
             currentReplayingEvent = null;
           }
-          function isReplayingEvent(event) {
-            return event === currentReplayingEvent;
+          function isReplayingEvent(event2) {
+            return event2 === currentReplayingEvent;
           }
           function getEventTarget(nativeEvent) {
             var target = nativeEvent.target || nativeEvent.srcElement || window;
@@ -5397,13 +5397,13 @@
                 var error2;
                 var didSetError = false;
                 var isCrossOriginError = false;
-                function handleWindowError(event) {
-                  error2 = event.error;
+                function handleWindowError(event2) {
+                  error2 = event2.error;
                   didSetError = true;
-                  if (error2 === null && event.colno === 0 && event.lineno === 0) {
+                  if (error2 === null && event2.colno === 0 && event2.lineno === 0) {
                     isCrossOriginError = true;
                   }
-                  if (event.defaultPrevented) {
+                  if (event2.defaultPrevented) {
                     if (error2 != null && typeof error2 === "object") {
                       try {
                         error2._suppressLogging = true;
@@ -7256,26 +7256,26 @@
             assign(SyntheticBaseEvent.prototype, {
               preventDefault: function() {
                 this.defaultPrevented = true;
-                var event = this.nativeEvent;
-                if (!event) {
+                var event2 = this.nativeEvent;
+                if (!event2) {
                   return;
                 }
-                if (event.preventDefault) {
-                  event.preventDefault();
-                } else if (typeof event.returnValue !== "unknown") {
-                  event.returnValue = false;
+                if (event2.preventDefault) {
+                  event2.preventDefault();
+                } else if (typeof event2.returnValue !== "unknown") {
+                  event2.returnValue = false;
                 }
                 this.isDefaultPrevented = functionThatReturnsTrue;
               },
               stopPropagation: function() {
-                var event = this.nativeEvent;
-                if (!event) {
+                var event2 = this.nativeEvent;
+                if (!event2) {
                   return;
                 }
-                if (event.stopPropagation) {
-                  event.stopPropagation();
-                } else if (typeof event.cancelBubble !== "unknown") {
-                  event.cancelBubble = true;
+                if (event2.stopPropagation) {
+                  event2.stopPropagation();
+                } else if (typeof event2.cancelBubble !== "unknown") {
+                  event2.cancelBubble = true;
                 }
                 this.isPropagationStopped = functionThatReturnsTrue;
               },
@@ -7289,8 +7289,8 @@
             eventPhase: 0,
             bubbles: 0,
             cancelable: 0,
-            timeStamp: function(event) {
-              return event.timeStamp || Date.now();
+            timeStamp: function(event2) {
+              return event2.timeStamp || Date.now();
             },
             defaultPrevented: 0,
             isTrusted: 0
@@ -7304,16 +7304,16 @@
           var lastMovementX;
           var lastMovementY;
           var lastMouseEvent;
-          function updateMouseMovementPolyfillState(event) {
-            if (event !== lastMouseEvent) {
-              if (lastMouseEvent && event.type === "mousemove") {
-                lastMovementX = event.screenX - lastMouseEvent.screenX;
-                lastMovementY = event.screenY - lastMouseEvent.screenY;
+          function updateMouseMovementPolyfillState(event2) {
+            if (event2 !== lastMouseEvent) {
+              if (lastMouseEvent && event2.type === "mousemove") {
+                lastMovementX = event2.screenX - lastMouseEvent.screenX;
+                lastMovementY = event2.screenY - lastMouseEvent.screenY;
               } else {
                 lastMovementX = 0;
                 lastMovementY = 0;
               }
-              lastMouseEvent = event;
+              lastMouseEvent = event2;
             }
           }
           var MouseEventInterface = assign({}, UIEventInterface, {
@@ -7330,21 +7330,21 @@
             getModifierState: getEventModifierState,
             button: 0,
             buttons: 0,
-            relatedTarget: function(event) {
-              if (event.relatedTarget === void 0)
-                return event.fromElement === event.srcElement ? event.toElement : event.fromElement;
-              return event.relatedTarget;
+            relatedTarget: function(event2) {
+              if (event2.relatedTarget === void 0)
+                return event2.fromElement === event2.srcElement ? event2.toElement : event2.fromElement;
+              return event2.relatedTarget;
             },
-            movementX: function(event) {
-              if ("movementX" in event) {
-                return event.movementX;
+            movementX: function(event2) {
+              if ("movementX" in event2) {
+                return event2.movementX;
               }
-              updateMouseMovementPolyfillState(event);
+              updateMouseMovementPolyfillState(event2);
               return lastMovementX;
             },
-            movementY: function(event) {
-              if ("movementY" in event) {
-                return event.movementY;
+            movementY: function(event2) {
+              if ("movementY" in event2) {
+                return event2.movementY;
               }
               return lastMovementY;
             }
@@ -7365,8 +7365,8 @@
           });
           var SyntheticAnimationEvent = createSyntheticEvent(AnimationEventInterface);
           var ClipboardEventInterface = assign({}, EventInterface, {
-            clipboardData: function(event) {
-              return "clipboardData" in event ? event.clipboardData : window.clipboardData;
+            clipboardData: function(event2) {
+              return "clipboardData" in event2 ? event2.clipboardData : window.clipboardData;
             }
           });
           var SyntheticClipboardEvent = createSyntheticEvent(ClipboardEventInterface);
@@ -7472,24 +7472,24 @@
             repeat: 0,
             locale: 0,
             getModifierState: getEventModifierState,
-            charCode: function(event) {
-              if (event.type === "keypress") {
-                return getEventCharCode(event);
+            charCode: function(event2) {
+              if (event2.type === "keypress") {
+                return getEventCharCode(event2);
               }
               return 0;
             },
-            keyCode: function(event) {
-              if (event.type === "keydown" || event.type === "keyup") {
-                return event.keyCode;
+            keyCode: function(event2) {
+              if (event2.type === "keydown" || event2.type === "keyup") {
+                return event2.keyCode;
               }
               return 0;
             },
-            which: function(event) {
-              if (event.type === "keypress") {
-                return getEventCharCode(event);
+            which: function(event2) {
+              if (event2.type === "keypress") {
+                return getEventCharCode(event2);
               }
-              if (event.type === "keydown" || event.type === "keyup") {
-                return event.keyCode;
+              if (event2.type === "keydown" || event2.type === "keyup") {
+                return event2.keyCode;
               }
               return 0;
             }
@@ -7526,11 +7526,11 @@
           });
           var SyntheticTransitionEvent = createSyntheticEvent(TransitionEventInterface);
           var WheelEventInterface = assign({}, MouseEventInterface, {
-            deltaX: function(event) {
-              return "deltaX" in event ? event.deltaX : "wheelDeltaX" in event ? -event.wheelDeltaX : 0;
+            deltaX: function(event2) {
+              return "deltaX" in event2 ? event2.deltaX : "wheelDeltaX" in event2 ? -event2.wheelDeltaX : 0;
             },
-            deltaY: function(event) {
-              return "deltaY" in event ? event.deltaY : "wheelDeltaY" in event ? -event.wheelDeltaY : "wheelDelta" in event ? -event.wheelDelta : 0;
+            deltaY: function(event2) {
+              return "deltaY" in event2 ? event2.deltaY : "wheelDeltaY" in event2 ? -event2.wheelDeltaY : "wheelDelta" in event2 ? -event2.wheelDelta : 0;
             },
             deltaZ: 0,
             deltaMode: 0
@@ -7621,17 +7621,17 @@
             }
             var listeners = accumulateTwoPhaseListeners(targetInst, eventType);
             if (listeners.length > 0) {
-              var event = new SyntheticCompositionEvent(eventType, domEventName, null, nativeEvent, nativeEventTarget);
+              var event2 = new SyntheticCompositionEvent(eventType, domEventName, null, nativeEvent, nativeEventTarget);
               dispatchQueue.push({
-                event,
+                event: event2,
                 listeners
               });
               if (fallbackData) {
-                event.data = fallbackData;
+                event2.data = fallbackData;
               } else {
                 var customData = getDataFromCustomEvent(nativeEvent);
                 if (customData !== null) {
-                  event.data = customData;
+                  event2.data = customData;
                 }
               }
             }
@@ -7697,12 +7697,12 @@
             }
             var listeners = accumulateTwoPhaseListeners(targetInst, "onBeforeInput");
             if (listeners.length > 0) {
-              var event = new SyntheticInputEvent("onBeforeInput", "beforeinput", null, nativeEvent, nativeEventTarget);
+              var event2 = new SyntheticInputEvent("onBeforeInput", "beforeinput", null, nativeEvent, nativeEventTarget);
               dispatchQueue.push({
-                event,
+                event: event2,
                 listeners
               });
-              event.data = chars;
+              event2.data = chars;
             }
           }
           function extractEvents(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
@@ -7756,9 +7756,9 @@
             enqueueStateRestore(target);
             var listeners = accumulateTwoPhaseListeners(inst, "onChange");
             if (listeners.length > 0) {
-              var event = new SyntheticEvent("onChange", "change", null, nativeEvent, target);
+              var event2 = new SyntheticEvent("onChange", "change", null, nativeEvent, target);
               dispatchQueue.push({
-                event,
+                event: event2,
                 listeners
               });
             }
@@ -8260,12 +8260,12 @@
               lastSelection = currentSelection;
               var listeners = accumulateTwoPhaseListeners(activeElementInst$1, "onSelect");
               if (listeners.length > 0) {
-                var event = new SyntheticEvent("onSelect", "select", null, nativeEvent, nativeEventTarget);
+                var event2 = new SyntheticEvent("onSelect", "select", null, nativeEvent, nativeEventTarget);
                 dispatchQueue.push({
-                  event,
+                  event: event2,
                   listeners
                 });
-                event.target = activeElement$1;
+                event2.target = activeElement$1;
               }
             }
           }
@@ -8485,30 +8485,30 @@
           }
           var mediaEventTypes = ["abort", "canplay", "canplaythrough", "durationchange", "emptied", "encrypted", "ended", "error", "loadeddata", "loadedmetadata", "loadstart", "pause", "play", "playing", "progress", "ratechange", "resize", "seeked", "seeking", "stalled", "suspend", "timeupdate", "volumechange", "waiting"];
           var nonDelegatedEvents = new Set(["cancel", "close", "invalid", "load", "scroll", "toggle"].concat(mediaEventTypes));
-          function executeDispatch(event, listener, currentTarget) {
-            var type = event.type || "unknown-event";
-            event.currentTarget = currentTarget;
-            invokeGuardedCallbackAndCatchFirstError(type, listener, void 0, event);
-            event.currentTarget = null;
+          function executeDispatch(event2, listener, currentTarget) {
+            var type = event2.type || "unknown-event";
+            event2.currentTarget = currentTarget;
+            invokeGuardedCallbackAndCatchFirstError(type, listener, void 0, event2);
+            event2.currentTarget = null;
           }
-          function processDispatchQueueItemsInOrder(event, dispatchListeners, inCapturePhase) {
+          function processDispatchQueueItemsInOrder(event2, dispatchListeners, inCapturePhase) {
             var previousInstance;
             if (inCapturePhase) {
               for (var i = dispatchListeners.length - 1; i >= 0; i--) {
                 var _dispatchListeners$i = dispatchListeners[i], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
-                if (instance !== previousInstance && event.isPropagationStopped()) {
+                if (instance !== previousInstance && event2.isPropagationStopped()) {
                   return;
                 }
-                executeDispatch(event, listener, currentTarget);
+                executeDispatch(event2, listener, currentTarget);
                 previousInstance = instance;
               }
             } else {
               for (var _i = 0; _i < dispatchListeners.length; _i++) {
                 var _dispatchListeners$_i = dispatchListeners[_i], _instance = _dispatchListeners$_i.instance, _currentTarget = _dispatchListeners$_i.currentTarget, _listener = _dispatchListeners$_i.listener;
-                if (_instance !== previousInstance && event.isPropagationStopped()) {
+                if (_instance !== previousInstance && event2.isPropagationStopped()) {
                   return;
                 }
-                executeDispatch(event, _listener, _currentTarget);
+                executeDispatch(event2, _listener, _currentTarget);
                 previousInstance = _instance;
               }
             }
@@ -8516,8 +8516,8 @@
           function processDispatchQueue(dispatchQueue, eventSystemFlags) {
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
             for (var i = 0; i < dispatchQueue.length; i++) {
-              var _dispatchQueue$i = dispatchQueue[i], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
-              processDispatchQueueItemsInOrder(event, listeners, inCapturePhase);
+              var _dispatchQueue$i = dispatchQueue[i], event2 = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
+              processDispatchQueueItemsInOrder(event2, listeners, inCapturePhase);
             }
             rethrowCaughtError();
           }
@@ -8745,8 +8745,8 @@
             }
             return null;
           }
-          function accumulateEnterLeaveListenersForEvent(dispatchQueue, event, target, common, inCapturePhase) {
-            var registrationName = event._reactName;
+          function accumulateEnterLeaveListenersForEvent(dispatchQueue, event2, target, common, inCapturePhase) {
+            var registrationName = event2._reactName;
             var listeners = [];
             var instance = target;
             while (instance !== null) {
@@ -8775,7 +8775,7 @@
             }
             if (listeners.length !== 0) {
               dispatchQueue.push({
-                event,
+                event: event2,
                 listeners
               });
             }
@@ -22900,7 +22900,7 @@
   var import_react2 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
-  // src/App.jsx
+  // src/Mobile.jsx
   var import_react = __toESM(require_react());
 
   // src/math.js
@@ -22914,7 +22914,7 @@
     const right = getRandomInt(rightMax);
     const isPlus = getRandomInt(2) > 0;
     const answer = isPlus ? left + right : left - right;
-    const eq = `${left} ${isPlus ? "+" : "-"} ${right}`;
+    const eq = `${left} ${isPlus ? "+" : "-"} ${right} = `;
     if (answer < 0) {
       return produceEquation(max);
     }
@@ -22928,96 +22928,219 @@
     }
     return output;
   }
+  function produceMultiplicationEquation(max = 12) {
+    const maxRandomLimit = max + 1;
+    const left = getRandomInt(maxRandomLimit);
+    const right = getRandomInt(maxRandomLimit);
+    const eq = `${left} x ${right} = `;
+    const answer = left * right;
+    return { eq, answer };
+  }
+  function generateMultiplicationExamples(amount = 10, maxMultiplier = 20) {
+    const output = [];
+    for (let i = 0; i < amount; i++) {
+      const { eq, answer } = produceMultiplicationEquation(maxMultiplier);
+      output.push({ label: eq, id: i, answer });
+    }
+    return output;
+  }
 
-  // src/App.jsx
+  // src/Mobile.jsx
   function countResult(items) {
     return items.reduce((memo, item) => {
       return memo + (item.correct ? 1 : 0);
     }, 0);
   }
-  var App = class extends import_react.default.Component {
-    constructor(props) {
-      super(props);
-      const amount = 30;
-      const limit = 20;
-      this.state = {
-        amount,
-        limit,
-        items: generateExamples(amount, limit),
-        correct: 0
-      };
-      this.onBlur = this._onBlur.bind(this);
-      this.onChangeAmount = this._onChangeAmount.bind(this);
-      this.onChangeLimit = this._onChangeLimit.bind(this);
-      this.onKeyDown = this._onKeyDown.bind(this);
+  function SmoothScrollTo(element) {
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth"
+      });
     }
-    _onKeyDown(e) {
-      if (e.keyCode === 13) {
-        let nextId = Number(e.target.dataset.id) + 1;
-        document.querySelector(`input[data-id="${this.state.amount > nextId ? nextId : 0}"]`).focus();
-        e.preventDefault();
+  }
+  var Mobile = () => {
+    const [amount, setAmount] = (0, import_react.useState)(30);
+    const [limit, setLimit] = (0, import_react.useState)(12);
+    const [examples, setExamples] = (0, import_react.useState)([]);
+    const [correct, setCorrect] = (0, import_react.useState)(0);
+    const [type, setType] = (0, import_react.useState)("addition");
+    (0, import_react.useEffect)(() => {
+      const mobile_menu = document.querySelector(".mobile-menu");
+      const mobile_trigger = document.querySelector(".mobile-menu__trigger");
+      function handleMenuClick(event2) {
+        const target = event2.target.closest(".mobile-menu__trigger");
+        if (target && target == mobile_trigger) {
+          mobile_menu.classList.toggle("mobile-menu_open");
+        } else if (event2.target !== mobile_trigger && event2.target !== mobile_menu) {
+          if (mobile_menu.classList.contains("mobile-menu_open")) {
+            mobile_menu.classList.remove("mobile-menu_open");
+          }
+        }
       }
-    }
-    _onChangeAmount(e) {
-      const value = e.target.value;
-      const amount = Number(value);
-      this.setState({ amount, correct: 0, items: generateExamples(amount, this.state.limit) });
-    }
-    _onChangeLimit(e) {
-      const value = e.target.value;
-      const limit = Number(value);
-      this.setState({ limit, correct: 0, items: generateExamples(this.state.amount, limit) });
-    }
-    _onBlur(e) {
+      document.addEventListener("click", handleMenuClick);
+      return () => {
+        document.removeEventListener("click", handleMenuClick);
+      };
+    }, []);
+    const startAddition = () => {
+      const generatesExamples = generateExamples(amount, limit);
+      setType("addition");
+      setExamples(generatesExamples);
+    };
+    const startMultiplication = () => {
+      const generatesExamples = generateMultiplicationExamples(amount, limit);
+      setType("multiplication");
+      setExamples(generatesExamples);
+    };
+    const moveToNextExample = (currentId) => {
+      let nextId = Number(currentId) + 1;
+      const element = document.querySelector(`section[data-id="${amount > nextId ? nextId : 0}"]`);
+      const inputElement = document.querySelector(`input[data-id="${amount > nextId ? nextId : 0}"]`).focus();
+      SmoothScrollTo(element);
+    };
+    const moveToSetup = (currentId) => {
+      const element = document.querySelector(`section[id="${currentId}"]`);
+      SmoothScrollTo(element);
+    };
+    const onBlur = (e) => {
       const value = e.target.value;
       const answer = Number(value);
       const id = e.target.dataset.id;
-      const items = this.state.items;
-      const item = items[id];
-      value === "" ? delete item.correct : item.correct = item.answer === answer;
-      const correct = countResult(items);
-      this.setState({ items, correct });
-    }
-    render() {
-      return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", {
-        className: "results"
-      }, "Amount of examples: ", /* @__PURE__ */ import_react.default.createElement("input", {
-        className: "setting",
-        type: "text",
-        value: this.state.amount,
-        onChange: this.onChangeAmount
-      }), "Maximum of addition: ", /* @__PURE__ */ import_react.default.createElement("input", {
-        className: "setting",
-        type: "text",
-        value: this.state.limit,
-        onChange: this.onChangeLimit
-      })), /* @__PURE__ */ import_react.default.createElement("ol", {
-        className: "equations"
-      }, this.state.items.map((item) => /* @__PURE__ */ import_react.default.createElement("li", {
-        className: "equation-field",
-        key: item.id
-      }, /* @__PURE__ */ import_react.default.createElement("span", {
-        className: "equation"
-      }, item.label), /* @__PURE__ */ import_react.default.createElement("span", {
-        className: "sign"
-      }, "="), /* @__PURE__ */ import_react.default.createElement("input", {
-        className: item.correct === void 0 ? "" : item.correct === true ? "correct" : "incorrect",
-        "data-id": item.id,
-        type: "text",
-        onChange: this.onBlur,
-        onKeyDown: this.onKeyDown
-      })))), /* @__PURE__ */ import_react.default.createElement("div", {
-        className: "results"
-      }, this.state.correct, " / ", this.state.amount));
-    }
+      const example = examples[id];
+      const isCorrect = example.answer === answer;
+      value === "" ? delete example.correct : example.correct = isCorrect;
+      const correct2 = countResult(examples);
+      setExamples([...examples]);
+      if (isCorrect) {
+        setTimeout(() => {
+          setCorrect(correct2);
+          moveToNextExample(id);
+        }, 300);
+      } else {
+        setTimeout(() => {
+          delete example.correct;
+          setExamples([...examples]);
+        }, 300);
+      }
+    };
+    const onKeyDown = (e) => {
+      if (e.keyCode === 13) {
+        const id = e.target.dataset.id;
+        const value = e.target.value;
+        const answer = Number(value);
+        const example = examples[id];
+        const isCorrect = example.answer === answer;
+        value === "" ? delete example.correct : example.correct = isCorrect;
+        const correct2 = countResult(examples);
+        setExamples([...examples]);
+        if (isCorrect) {
+          setTimeout(() => {
+            setCorrect(correct2);
+            moveToNextExample(id);
+          }, 300);
+        } else {
+          setTimeout(() => {
+            delete example.correct;
+            setExamples([...examples]);
+          }, 300);
+        }
+        e.preventDefault();
+      }
+    };
+    const setup = () => {
+      setExamples([]);
+      setCorrect(0);
+      moveToSetup(type);
+    };
+    const clear = () => {
+      setExamples([]);
+      setCorrect(0);
+    };
+    return /* @__PURE__ */ import_react.default.createElement("div", {
+      className: "snappy-container"
+    }, /* @__PURE__ */ import_react.default.createElement("nav", {
+      className: "mobile-menu"
+    }, /* @__PURE__ */ import_react.default.createElement("a", {
+      href: "#addition",
+      onClick: clear
+    }, "New +/- training"), /* @__PURE__ */ import_react.default.createElement("a", {
+      href: "#multiplication",
+      onClick: clear
+    }, "New multiplication training"), /* @__PURE__ */ import_react.default.createElement("a", {
+      href: "#about",
+      onClick: clear
+    }, "About"), /* @__PURE__ */ import_react.default.createElement("div", {
+      className: "mobile-menu__trigger"
+    }, /* @__PURE__ */ import_react.default.createElement("span", null))), /* @__PURE__ */ import_react.default.createElement("div", {
+      className: "overlay"
+    }), examples.length > 0 && correct === examples.length && /* @__PURE__ */ import_react.default.createElement("section", {
+      className: "congrats"
+    }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h2", null, "Congratulations!")), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("p", null, "You solved all examples correctly!")), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("button", {
+      className: "next-button",
+      onClick: setup
+    }, "Start again"))), examples.length > 0 && correct !== examples.length && examples.map((item) => /* @__PURE__ */ import_react.default.createElement("section", {
+      className: "equation-field",
+      key: item.id,
+      "data-id": item.id
+    }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h2", null, item.id + 1, ". "), /* @__PURE__ */ import_react.default.createElement("h3", null, "Score ", correct, " / ", examples.length)), /* @__PURE__ */ import_react.default.createElement("div", {
+      className: "user-interaction"
+    }, /* @__PURE__ */ import_react.default.createElement("h2", null, item.label), /* @__PURE__ */ import_react.default.createElement("input", {
+      className: item.correct === void 0 ? "" : item.correct === true ? "correct" : "incorrect",
+      "data-id": item.id,
+      type: "number",
+      inputMode: "numeric",
+      autoComplete: "off",
+      disabled: item.correct === true,
+      onBlur,
+      onKeyDown
+    })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("button", {
+      className: "next-button",
+      "data-id": item.id,
+      onClick: (e) => moveToNextExample(e.target.dataset.id)
+    }, "Next")))), examples.length === 0 && /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement("section", {
+      id: "addition",
+      className: "setup"
+    }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h2", null, "Number addition and subtraction"), /* @__PURE__ */ import_react.default.createElement("h2", null, "X + Y = Z"), /* @__PURE__ */ import_react.default.createElement("h2", null, "X - Y = Z")), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", null, "How many to solve"), /* @__PURE__ */ import_react.default.createElement("input", {
+      className: "setting",
+      type: "number",
+      inputMode: "numeric",
+      value: amount,
+      onChange: () => setAmount(Number(event.target.value))
+    }), /* @__PURE__ */ import_react.default.createElement("label", null, "Max equation result"), /* @__PURE__ */ import_react.default.createElement("input", {
+      className: "setting",
+      type: "number",
+      inputMode: "numeric",
+      value: limit,
+      onChange: () => setLimit(Number(event.target.value))
+    })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("button", {
+      className: "next-button",
+      onClick: startAddition
+    }, "Start training"))), /* @__PURE__ */ import_react.default.createElement("section", {
+      id: "multiplication",
+      className: "setup"
+    }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h2", null, "Number multiplication"), /* @__PURE__ */ import_react.default.createElement("h2", null, "X x Y = Z")), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", null, "How many to solve"), /* @__PURE__ */ import_react.default.createElement("input", {
+      className: "setting",
+      type: "number",
+      inputMode: "numeric",
+      value: amount,
+      onChange: () => setAmount(Number(event.target.value))
+    }), /* @__PURE__ */ import_react.default.createElement("label", null, "Max equation result"), /* @__PURE__ */ import_react.default.createElement("input", {
+      className: "setting",
+      type: "number",
+      inputMode: "numeric",
+      value: limit,
+      onChange: () => setLimit(Number(event.target.value))
+    })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("button", {
+      className: "next-button",
+      onClick: startMultiplication
+    }, "Start training"))), /* @__PURE__ */ import_react.default.createElement("section", {
+      id: "about"
+    }, /* @__PURE__ */ import_react.default.createElement("p", null, "This app is for training number addition, subtraction and multiplication for kids."))));
   };
 
   // src/index.jsx
-  function Entry() {
-    return /* @__PURE__ */ import_react2.default.createElement(App, null);
-  }
   var root = import_client.default.createRoot(document.getElementById("root"));
-  root.render(/* @__PURE__ */ import_react2.default.createElement(Entry, null));
+  root.render(/* @__PURE__ */ import_react2.default.createElement(Mobile, null));
 })();
 /**
  * @license React
