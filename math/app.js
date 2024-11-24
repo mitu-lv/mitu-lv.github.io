@@ -23078,7 +23078,7 @@
     }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h2", null, "Congratulations!")), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("p", null, "You solved all examples correctly!")), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("button", {
       className: "next-button",
       onClick: setup
-    }, "Start again"))), examples.length > 0 && correct !== examples.length && examples.map((item) => /* @__PURE__ */ import_react.default.createElement("section", {
+    }, "Back to lobby"))), examples.length > 0 && correct !== examples.length && examples.map((item) => /* @__PURE__ */ import_react.default.createElement("section", {
       className: "equation-field",
       key: item.id,
       "data-id": item.id
@@ -23124,7 +23124,7 @@
       inputMode: "numeric",
       value: amount,
       onChange: () => setAmount(Number(event.target.value))
-    }), /* @__PURE__ */ import_react.default.createElement("label", null, "Max equation result"), /* @__PURE__ */ import_react.default.createElement("input", {
+    }), /* @__PURE__ */ import_react.default.createElement("label", null, "Max multiplier"), /* @__PURE__ */ import_react.default.createElement("input", {
       className: "setting",
       type: "number",
       inputMode: "numeric",
